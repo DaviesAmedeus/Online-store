@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Order;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class MyAccountController extends Controller
+{
+    public function orders()
+            {
+            $viewData = [];
+            $viewData["title"] = "My Orders - Online Store";
+            $viewData["subtitle"] = "My Orders";
+            // I Commented below to  use the eager loading to reduce number of queries sent to the data base, hence this is known as Lazy loading
+            // $viewData["orders"] = Order::where('user_id', Auth::user()->getId())->get(); 
+            // Eager loading, it is used with "with()"
+            $viewData["orders"] = Order::with(['items.product'])->where('user_id', Auth::user()->getId())->get();
+            return view('myaccount.orders')->with("viewData", $viewData);
+            }
+
+}
